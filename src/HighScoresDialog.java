@@ -13,10 +13,6 @@ public class HighScoresDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final int DIALOG_WIDTH  = 560;
-	private static final int DIALOG_HEIGHT = 460;
-
-	// [0]=name  [1]=score  [2]=date  [3]=time
 	private ArrayList<String[]> entries;
 
 	public HighScoresDialog(JFrame parent) {
@@ -29,21 +25,36 @@ public class HighScoresDialog extends JDialog {
 
 		setResizable(false);
 		setLayout(new BorderLayout());
+		getContentPane().setBackground(new Color(30, 30, 30));
 
-		ScoreBoardPanel boardPanel = new ScoreBoardPanel();
-		boardPanel.setBackground(new Color(20, 20, 20));
-		boardPanel.setPreferredSize(new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT - 52));
+		JLabel titleLabel = new JLabel("TOP 10 HIGH SCORES", SwingConstants.CENTER);
+		titleLabel.setForeground(new Color(220, 180, 0));
+		titleLabel.setFont(new Font("Monospaced", Font.BOLD, 16));
+		titleLabel.setBorder(BorderFactory.createEmptyBorder(12, 0, 8, 0));
+		titleLabel.setOpaque(true);
+		titleLabel.setBackground(new Color(30, 30, 30));
+		add(titleLabel, BorderLayout.NORTH);
+
+		JTextArea textArea = new JTextArea(buildScoreText());
+		textArea.setEditable(false);
+		textArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
+		textArea.setBackground(new Color(30, 30, 30));
+		textArea.setForeground(new Color(210, 210, 210));
+		textArea.setBorder(BorderFactory.createEmptyBorder(4, 16, 4, 16));
+
+		JScrollPane scrollPane = new JScrollPane(textArea);
+		scrollPane.setBorder(null);
+		scrollPane.setPreferredSize(new Dimension(380, 280));
+		scrollPane.getViewport().setBackground(new Color(30, 30, 30));
+		add(scrollPane, BorderLayout.CENTER);
 
 		JPanel bottomPanel = new JPanel();
-		bottomPanel.setBackground(new Color(20, 20, 20));
+		bottomPanel.setBackground(new Color(30, 30, 30));
+		bottomPanel.setBorder(BorderFactory.createEmptyBorder(6, 0, 10, 0));
 
-		JButton closeButton = new JButton("CLOSE");
-		closeButton.setBackground(new Color(60, 60, 60));
-		closeButton.setForeground(Color.WHITE);
-		closeButton.setFont(new Font("Monospaced", Font.BOLD, 12));
+		JButton closeButton = new JButton("Close");
+		closeButton.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		closeButton.setFocusPainted(false);
-		closeButton.setBorder(BorderFactory.createLineBorder(new Color(160, 160, 160), 2));
-		closeButton.setPreferredSize(new Dimension(120, 32));
 		closeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -52,17 +63,35 @@ public class HighScoresDialog extends JDialog {
 		});
 
 		bottomPanel.add(closeButton);
-
-		add(boardPanel, BorderLayout.CENTER);
 		add(bottomPanel, BorderLayout.SOUTH);
 
 		pack();
 		setLocationRelativeTo(parent);
 	}
 
-	// ---------------------------------------------------------------
-	// Reads every line from scores.csv into entries
-	// Supports both old format (name,score) and new format (name,score,date,time)
+	private String buildScoreText() {
+		if(entries.isEmpty()) {
+			return "No scores yet.";
+		}
+
+		int rowCount;
+		if(entries.size() < 10) {
+			rowCount = entries.size();
+		} else {
+			rowCount = 10;
+		}
+
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < rowCount; i++) {
+			String[] entry = entries.get(i);
+			String name = entry[0];
+			String score = entry[1];
+			String date = entry[2];
+			sb.append(String.format("%2d. %-12s %6s    %s%n", i + 1, name, score, date));
+		}
+		return sb.toString();
+	}
+
 	private void loadScores() {
 		BufferedReader reader = null;
 		try {
@@ -71,143 +100,45 @@ public class HighScoresDialog extends JDialog {
 			while((line = reader.readLine()) != null) {
 				String[] parts = line.split(",");
 				if(parts.length >= 2) {
-					String dateStr = parts.length >= 3 ? parts[2].trim() : "-";
-					String timeStr = parts.length >= 4 ? parts[3].trim() : "-";
-					entries.add(new String[]{ parts[0].trim(), parts[1].trim(), dateStr, timeStr });
+					String dateStr;
+					if(parts.length >= 3) {
+						dateStr = parts[2].trim();
+					} else {
+						dateStr = "-";
+					}
+					entries.add(new String[]{ parts[0].trim(), parts[1].trim(), dateStr });
 				}
 			}
 		} catch(IOException ex) {
-			// File may not exist yet — that is fine, list stays empty
 		} finally {
 			if(reader != null) {
-				try { reader.close(); } catch(IOException ex) { ex.printStackTrace(); }
+				try {
+					reader.close();
+				} catch(IOException ex) {
+					ex.printStackTrace();
+				}
 			}
 		}
 	}
 
-	// ---------------------------------------------------------------
-	// Sorts entries descending by score (highest first)
 	private void sortScores() {
 		Collections.sort(entries, new Comparator<String[]>() {
 			@Override
 			public int compare(String[] entryA, String[] entryB) {
 				int scoreA = 0;
 				int scoreB = 0;
-				try { scoreA = Integer.parseInt(entryA[1]); } catch(NumberFormatException ex) { scoreA = 0; }
-				try { scoreB = Integer.parseInt(entryB[1]); } catch(NumberFormatException ex) { scoreB = 0; }
-				return scoreB - scoreA; // descending
+				try {
+					scoreA = Integer.parseInt(entryA[1]);
+				} catch(NumberFormatException ex) {
+					scoreA = 0;
+				}
+				try {
+					scoreB = Integer.parseInt(entryB[1]);
+				} catch(NumberFormatException ex) {
+					scoreB = 0;
+				}
+				return scoreB - scoreA;
 			}
 		});
-	}
-
-	// ---------------------------------------------------------------
-	// Inner panel that paints the scoreboard with Java2D
-	private class ScoreBoardPanel extends JPanel {
-
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		protected void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			drawScoreBoard(g);
-		}
-	}
-
-	// ---------------------------------------------------------------
-	// All the actual drawing — called from ScoreBoardPanel.paintComponent
-	private void drawScoreBoard(Graphics g) {
-		int panelWidth = DIALOG_WIDTH;
-
-		// Column X positions
-		int colRank  = 24;
-		int colName  = 86;
-		int colScore = 258;
-		int colDate  = 354;
-		int colTime  = 468;
-
-		// ---- Title ----
-		g.setColor(new Color(220, 180, 0));
-		g.setFont(new Font("Monospaced", Font.BOLD, 22));
-		FontMetrics titleFm = g.getFontMetrics();
-		String title = "HIGH SCORES";
-		g.drawString(title, (panelWidth - titleFm.stringWidth(title)) / 2, 44);
-
-		// Title underline
-		g.setColor(new Color(90, 90, 90));
-		g.fillRect(20, 54, panelWidth - 40, 2);
-
-		// ---- Column headers ----
-		g.setColor(new Color(160, 160, 160));
-		g.setFont(new Font("Monospaced", Font.BOLD, 11));
-		g.drawString("RANK",  colRank,  76);
-		g.drawString("NAME",  colName,  76);
-		g.drawString("SCORE", colScore, 76);
-		g.drawString("DATE",  colDate,  76);
-		g.drawString("TIME",  colTime,  76);
-
-		// Header underline
-		g.setColor(new Color(70, 70, 70));
-		g.fillRect(20, 82, panelWidth - 40, 1);
-
-		// ---- Score rows (top 10 only) ----
-		int rowCount = entries.size() < 10 ? entries.size() : 10;
-		for(int i = 0; i < rowCount; i++) {
-			String[] entry  = entries.get(i);
-			int      rowY   = 106 + i * 32;
-			int      rowTop = rowY - 18;
-
-			// Alternating row background
-			if(i % 2 == 0) {
-				g.setColor(new Color(35, 35, 35));
-				g.fillRect(20, rowTop, panelWidth - 40, 28);
-			}
-
-			// Rank — gold / silver / bronze for top 3, grey otherwise
-			if(i == 0) {
-				g.setColor(new Color(255, 215, 0));
-			} else if(i == 1) {
-				g.setColor(new Color(192, 192, 192));
-			} else if(i == 2) {
-				g.setColor(new Color(205, 127, 50));
-			} else {
-				g.setColor(new Color(160, 160, 160));
-			}
-			g.setFont(new Font("Monospaced", Font.BOLD, 13));
-			g.drawString(String.format("#%02d", i + 1), colRank, rowY);
-
-			// Name — truncate at 10 chars
-			String displayName = entry[0];
-			if(displayName.length() > 10) {
-				displayName = displayName.substring(0, 10);
-			}
-			g.setColor(Color.WHITE);
-			g.setFont(new Font("Monospaced", Font.PLAIN, 13));
-			g.drawString(displayName, colName, rowY);
-
-			// Score — green
-			int scoreVal = 0;
-			try { scoreVal = Integer.parseInt(entry[1]); } catch(NumberFormatException ex) { scoreVal = 0; }
-			g.setColor(new Color(80, 210, 80));
-			g.setFont(new Font("Monospaced", Font.BOLD, 13));
-			g.drawString(String.format("%05d", scoreVal), colScore, rowY);
-
-			// Date — light blue
-			g.setColor(new Color(130, 180, 230));
-			g.setFont(new Font("Monospaced", Font.PLAIN, 12));
-			g.drawString(entry[2], colDate, rowY);
-
-			// Time — lighter grey
-			g.setColor(new Color(170, 170, 170));
-			g.drawString(entry[3], colTime, rowY);
-		}
-
-		// ---- Empty state ----
-		if(entries.isEmpty()) {
-			g.setColor(new Color(110, 110, 110));
-			g.setFont(new Font("Monospaced", Font.ITALIC, 14));
-			FontMetrics emptyFm = g.getFontMetrics();
-			String emptyMsg = "No scores yet — go play!";
-			g.drawString(emptyMsg, (panelWidth - emptyFm.stringWidth(emptyMsg)) / 2, 190);
-		}
 	}
 }

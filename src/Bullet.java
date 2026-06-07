@@ -2,7 +2,7 @@ public class Bullet extends GameObject {
 
 	protected int speed;
 	protected int damage;
-	protected int direction; // 0=Up 1=Down 2=Left 3=Right
+	protected int direction;
 
 	public Bullet(int x, int y, int width, int height, int speed, int damage, int direction) {
 		// TODO Auto-generated constructor stub

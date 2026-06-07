@@ -7,7 +7,6 @@ public class OptionsDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 
-	// Currently selected difficulty: 0=Easy 1=Medium 2=Hard
 	private int selectedDifficulty;
 	private boolean confirmed = false;
 
@@ -23,16 +22,14 @@ public class OptionsDialog extends JDialog {
 		setLayout(new BorderLayout(10, 10));
 		setResizable(false);
 
-		// ── Title label ─────────────────────────────────────────────
 		JLabel titleLabel = new JLabel("Select Difficulty", SwingConstants.CENTER);
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
 		titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 4, 10));
 		add(titleLabel, BorderLayout.NORTH);
 
-		// ── Radio buttons ────────────────────────────────────────────
-		radioEasy   = new JRadioButton("Easy   — fewer enemies on screen, slow fire rate");
-		radioMedium = new JRadioButton("Medium — standard settings");
-		radioHard   = new JRadioButton("Hard   — more enemies on screen, fast fire rate");
+		radioEasy   = new JRadioButton("Easy   - fewer enemies on screen, slow fire rate");
+		radioMedium = new JRadioButton("Medium - standard settings");
+		radioHard   = new JRadioButton("Hard   - more enemies on screen, fast fire rate");
 
 		ButtonGroup group = new ButtonGroup();
 		group.add(radioEasy);
@@ -55,7 +52,6 @@ public class OptionsDialog extends JDialog {
 
 		add(radioPanel, BorderLayout.CENTER);
 
-		// ── OK / Cancel buttons ──────────────────────────────────────
 		JButton okButton     = new JButton("OK");
 		JButton cancelButton = new JButton("Cancel");
 
@@ -91,12 +87,10 @@ public class OptionsDialog extends JDialog {
 		setLocationRelativeTo(parent);
 	}
 
-	// Returns true if the user pressed OK (not Cancel / closed the dialog)
 	public boolean isConfirmed() {
 		return confirmed;
 	}
 
-	// Returns 0=Easy, 1=Medium, 2=Hard
 	public int getSelectedDifficulty() {
 		return selectedDifficulty;
 	}

@@ -16,35 +16,28 @@ public class GameFrame extends JFrame {
 	private TitlePanel titlePanel;
 	private JPanel     rootPanel;
 
-	// 0=Easy 1=Medium 2=Hard — persists across game restarts in this session
 	private int currentDifficulty = 1;
 
-	// Card names for the root CardLayout
+
 	private static final String CARD_TITLE = "title";
 	private static final String CARD_GAME  = "game";
 
 	public GameFrame() {
-		// TODO Auto-generated constructor stub
 		setTitle("Battle City");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setLayout(new BorderLayout());
 
-		// Create maps/ folder and write 3 default level files
 		setupMapsFolder();
 
-		// Create HUD panel (lives=3, score=0, level=1)
 		hud = new HUDPanel(3, 0, 1);
 
-		// Create game panel — receives HUD reference
 		panel = new GamePanel(hud);
 
-		// ── Game card: game area + HUD side by side ──────────────────
 		JPanel gameCard = new JPanel(new BorderLayout());
 		gameCard.add(panel, BorderLayout.CENTER);
 		gameCard.add(hud,   BorderLayout.EAST);
 
-		// ── Title card ───────────────────────────────────────────────
 		titlePanel = new TitlePanel(new TitlePanel.TitleListener() {
 			@Override
 			public void onOnePlayer() {
@@ -62,14 +55,12 @@ public class GameFrame extends JFrame {
 			}
 		});
 
-		// ── Root panel with CardLayout ────────────────────────────────
 		rootPanel = new JPanel(new CardLayout());
 		rootPanel.add(titlePanel, CARD_TITLE);
 		rootPanel.add(gameCard,   CARD_GAME);
 
 		add(rootPanel, BorderLayout.CENTER);
 
-		// Menu bar
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("Menu");
 
@@ -81,12 +72,11 @@ public class GameFrame extends JFrame {
 		JMenuItem aboutItem      = new JMenuItem("About");
 		JMenuItem exitItem       = new JMenuItem("Exit");
 
-		// New Game → open level selection dialog, then switch to game card
 		newGameItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				LevelSelectDialog dialog = new LevelSelectDialog(GameFrame.this);
-				dialog.setVisible(true); // Modal: blocks until closed
+				dialog.setVisible(true);
 
 				String path = dialog.getSelectedMapPath();
 				if(path != null) {
@@ -95,7 +85,6 @@ public class GameFrame extends JFrame {
 			}
 		});
 
-		// Map Editor → open in a separate window
 		mapEditorItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -104,7 +93,6 @@ public class GameFrame extends JFrame {
 			}
 		});
 
-		// Options → difficulty selection dialog
 		optionsItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -122,7 +110,6 @@ public class GameFrame extends JFrame {
 			}
 		});
 
-		// High Scores → open the scoreboard dialog
 		highScoresItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -131,16 +118,14 @@ public class GameFrame extends JFrame {
 			}
 		});
 
-		// Help → show controls
 		helpItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String helpText = "Controls:\n" + "  Move:   W / A / S / D  or  Arrow Keys\n" + "  Fire:   SPACE\n\n" + "Tiles:\n" + "  Brick  — destroyed by bullets\n" + "  Steel  — indestructible\n" + "  Bush   — tanks and bullets pass through\n" + "  Water  — bullets pass through, tanks cannot\n\n" + "Protect the Eagle!  Lose all lives or\n" + "let the Eagle be destroyed and it's Game Over.";
+				String helpText = "Controls:\n" + "  Move:   W / A / S / D  or  Arrow Keys\n" + "  Fire:   SPACE\n\n" + "Tiles:\n" + "  Brick  - destroyed by bullets\n" + "  Steel  - indestructible\n" + "  Bush   - tanks and bullets pass through\n" + "  Water  - bullets pass through, tanks cannot\n\n" + "Protect the Eagle!  Lose all lives or\n" + "let the Eagle be destroyed and it's Game Over.";
 				JOptionPane.showMessageDialog(GameFrame.this, helpText, "Help", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 
-		// About
 		aboutItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -149,7 +134,6 @@ public class GameFrame extends JFrame {
 			}
 		});
 
-		// Exit
 		exitItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -168,7 +152,6 @@ public class GameFrame extends JFrame {
 		menuBar.add(menu);
 		setJMenuBar(menuBar);
 
-		// Pause button → connected to GamePanel.togglePause()
 		hud.getPauseButton().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -180,8 +163,6 @@ public class GameFrame extends JFrame {
 		setLocationRelativeTo(null);
 	}
 
-	// ---------------------------------------------------------------
-	// Loads a map, switches to the game card, and ensures the game thread is running
 	private void launchGame(String path) {
 		panel.setDifficulty(currentDifficulty);
 		panel.loadMapFromFile(path);
@@ -191,8 +172,6 @@ public class GameFrame extends JFrame {
 		panel.requestFocusInWindow();
 	}
 
-	// ---------------------------------------------------------------
-	// Creates maps/ directory and writes 3 default level files if missing
 	private void setupMapsFolder() {
 		File mapsDir = new File("maps");
 		if(!mapsDir.exists()) {
@@ -204,7 +183,6 @@ public class GameFrame extends JFrame {
 		writeLevelFile("maps" + File.separator + "level3.csv", getLevel3Data());
 	}
 
-	// Creates the file only if it does not exist — leaves user-modified files intact
 	private void writeLevelFile(String path, int[][] data) {
 		File file = new File(path);
 		if(file.exists()) {
@@ -227,13 +205,16 @@ public class GameFrame extends JFrame {
 			ex.printStackTrace();
 		} finally {
 			if(writer != null) {
-				try { writer.close(); } catch(IOException ex) { ex.printStackTrace(); }
+				try {
+					writer.close();
+				} catch(IOException ex) {
+					ex.printStackTrace();
+				}
 			}
 		}
 	}
 
-	// ---------------------------------------------------------------
-	// Easy — brick walls only, wide corridors
+
 	private int[][] getLevel1Data() {
 		return new int[][] {
 			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -248,13 +229,12 @@ public class GameFrame extends JFrame {
 			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 			{0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0},
 			{0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0},
-			{0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0}, // eagle top bricks (cols 6,7,8)
-			{0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0}, // eagle side bricks | player col 4
-			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // eagle at col 7 (hard-coded)
+			{0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0},
+			{0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 		};
 	}
 
-	// Medium — steel + bush + water corners
 	private int[][] getLevel2Data() {
 		return new int[][] {
 			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -269,13 +249,12 @@ public class GameFrame extends JFrame {
 			{4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4},
 			{0, 2, 0, 1, 0, 0, 2, 0, 0, 2, 0, 0, 1, 0, 2, 0},
 			{0, 2, 0, 1, 0, 0, 2, 0, 0, 2, 0, 0, 1, 0, 2, 0},
-			{0, 0, 0, 0, 2, 0, 1, 1, 1, 0, 0, 2, 0, 0, 0, 0}, // eagle top bricks
-			{0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0}, // eagle side bricks | player col 4
-			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // eagle at col 7 (hard-coded)
+			{0, 0, 0, 0, 2, 0, 1, 1, 1, 0, 0, 2, 0, 0, 0, 0},
+			{0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 		};
 	}
 
-	// Hard — heavy steel + water corridors + bush maze
 	private int[][] getLevel3Data() {
 		return new int[][] {
 			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -290,20 +269,18 @@ public class GameFrame extends JFrame {
 			{4, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 4},
 			{2, 0, 3, 0, 2, 0, 0, 2, 2, 0, 0, 2, 0, 3, 0, 2},
 			{2, 0, 3, 0, 2, 0, 0, 2, 2, 0, 0, 2, 0, 3, 0, 2},
-			{0, 0, 0, 2, 0, 3, 1, 1, 1, 3, 0, 2, 0, 0, 0, 0}, // eagle top bricks
-			{0, 2, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 2, 0}, // eagle side bricks | player col 4
-			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // eagle at col 7 (hard-coded)
+			{0, 0, 0, 2, 0, 3, 1, 1, 1, 3, 0, 2, 0, 0, 0, 0},
+			{0, 2, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 2, 0},
+			{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 		};
 	}
 
-	// ---------------------------------------------------------------
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				GameFrame frame = new GameFrame();
 				frame.setVisible(true);
-				// Show title screen and start its blink thread
 				frame.titlePanel.requestFocusInWindow();
 				frame.titlePanel.startThread();
 			}

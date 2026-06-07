@@ -1,43 +1,50 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class HUDPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	// HUD dimensions — sits to the right of the 640×600 game area
 	private static final int HUD_WIDTH  = 160;
 	private static final int HUD_HEIGHT = 600;
-
-	// Mini tank icon dimensions (drawn with Java2D, matching original HUD style)
-	private static final int ICON_W     = 16;
-	private static final int ICON_H     = 14;
-	private static final int ICON_GAP_X = 6;
-	private static final int ICON_GAP_Y = 4;
-
-	// Max enemy slots shown in the grid
 	private static final int MAX_ENEMIES = 20;
 
-	// Section start Y positions — computed once so they stay consistent
-	private static final int SECTION_ENEMY_Y  = 20;   // "ENEMY" label baseline
-	private static final int GRID_START_Y     = 28;   // icon grid top
-	// grid takes 10 rows × (ICON_H + ICON_GAP_Y) = 10 × 18 = 180px → ends at y=208
-	private static final int SEP1_Y           = 212;
-	private static final int SECTION_1P_Y     = 228;  // "1P" baseline
-	private static final int SEP2_Y           = 278;
-	private static final int SECTION_LIVES_Y  = 292;  // lives baseline
-	private static final int SEP3_Y           = 318;
-	private static final int SECTION_STAGE_Y  = 332;  // "STAGE" baseline
-	// stage box: y=338, h=36 → bottom=374
-	private static final int SEP4_Y           = 382;
-	private static final int PAUSE_BTN_Y      = 400;  // tight below last separator
+	private static final int BORDER_W   = 16;
+	private static final int CONTENT_W  = HUD_WIDTH - BORDER_W;
+
+	private static final int ICON_W     = 14;
+	private static final int ICON_H     = 18;
+	private static final int ICON_GAP   = 3;
+
+	private static final int ENEMY_LABEL_Y = 16;
+	private static final int GRID_Y        = 24;
+	private static final int SEP1_Y        = 232;
+	private static final int LABEL_1P_Y    = 250;
+	private static final int SCORE_Y       = 268;
+	private static final int SEP2_Y        = 282;
+	private static final int LIVES_Y       = 308;
+	private static final int SEP3_Y        = 332;
+	private static final int FLAG_Y        = 352;
+	private static final int STAGE_NUM_Y   = 400;
+	private static final int SEP4_Y        = 430;
+	private static final int PAUSE_BTN_Y   = 448;
 
 	private int lives;
 	private int score;
 	private int level;
-	private int enemyCount; // how many enemy slots are still active
+	private int enemyCount;
 
 	private JButton pauseButton;
+
+	private BufferedImage imgEnemyActive;
+	private BufferedImage imgEnemyDead;
+	private BufferedImage imgLifeIcon;
+	private BufferedImage imgFlag;
+	private BufferedImage imgBorderStrip;
 
 	public HUDPanel(int lives, int score, int level) {
 		// TODO Auto-generated constructor stub
@@ -47,21 +54,67 @@ public class HUDPanel extends JPanel {
 		this.enemyCount = MAX_ENEMIES;
 
 		setPreferredSize(new Dimension(HUD_WIDTH, HUD_HEIGHT));
-		setBackground(new Color(38, 38, 38));
+		setBackground(new Color(99, 99, 99));
 		setLayout(null);
 
-		// Pause button — placed right below the stage section
-		pauseButton = new JButton("II  PAUSE");
-		pauseButton.setBounds(16, PAUSE_BTN_Y, HUD_WIDTH - 32, 28);
-		pauseButton.setBackground(new Color(55, 55, 55));
+		loadSprites();
+
+		pauseButton = new JButton("PAUSE");
+		pauseButton.setBounds(8, PAUSE_BTN_Y, CONTENT_W - 16, 26);
+		pauseButton.setBackground(new Color(50, 50, 50));
 		pauseButton.setForeground(new Color(220, 200, 0));
-		pauseButton.setFont(new Font("Monospaced", Font.BOLD, 11));
+		pauseButton.setFont(new Font("Monospaced", Font.BOLD, 10));
 		pauseButton.setFocusPainted(false);
-		pauseButton.setBorder(BorderFactory.createLineBorder(new Color(120, 110, 80), 1));
+		pauseButton.setBorder(BorderFactory.createLineBorder(new Color(181, 49, 33), 1));
 		add(pauseButton);
 	}
 
-	// ---------------------------------------------------------------
+	private void loadSprites() {
+		try {
+			imgEnemyActive = ImageIO.read(new File("images/hudEnemyTank.png"));
+		} catch(IOException ex) {
+			imgEnemyActive = null;
+		}
+		try {
+			imgLifeIcon = ImageIO.read(new File("images/hudPlayerLife.png"));
+		} catch(IOException ex) {
+			imgLifeIcon = null;
+		}
+		try {
+			imgFlag = ImageIO.read(new File("images/hudFlag.png"));
+		} catch(IOException ex) {
+			imgFlag = null;
+		}
+		try {
+			imgBorderStrip = ImageIO.read(new File("images/hudBorderStrip.png"));
+		} catch(IOException ex) {
+			imgBorderStrip = null;
+		}
+
+		imgEnemyDead = makeDimCopy(imgEnemyActive);
+	}
+
+	private BufferedImage makeDimCopy(BufferedImage src) {
+		if(src == null) {
+			return null;
+		}
+		BufferedImage dim = new BufferedImage(src.getWidth(), src.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		for(int y = 0; y < src.getHeight(); y++) {
+			for(int x = 0; x < src.getWidth(); x++) {
+				int argb = src.getRGB(x, y);
+				int a = (argb >> 24) & 0xFF;
+				int r = (argb >> 16) & 0xFF;
+				int gg = (argb >> 8)  & 0xFF;
+				int b =   argb        & 0xFF;
+				r  = r  / 6;
+				gg = gg / 6;
+				b  = b  / 6;
+				dim.setRGB(x, y, (a << 24) | (r << 16) | (gg << 8) | b);
+			}
+		}
+		return dim;
+	}
+
 	public JButton getPauseButton() {
 		return pauseButton;
 	}
@@ -86,165 +139,107 @@ public class HUDPanel extends JPanel {
 		repaint();
 	}
 
-	// ---------------------------------------------------------------
-	// Draws a mini enemy tank icon (facing downward) at (drawX, drawY)
-	// active = orange (enemy still present), inactive = dark (slot used)
-	private void drawEnemyIcon(Graphics g, int drawX, int drawY, boolean active) {
-		Color bodyColor  = active ? new Color(210, 90, 0) : new Color(52, 52, 52);
-		Color trackColor = active ? new Color(140, 55, 0) : new Color(38, 38, 38);
-
-		// Tracks
-		g.setColor(trackColor);
-		g.fillRect(drawX,              drawY + 3, 3, ICON_H - 3);
-		g.fillRect(drawX + ICON_W - 3, drawY + 3, 3, ICON_H - 3);
-
-		// Hull
-		g.setColor(bodyColor);
-		g.fillRect(drawX + 3, drawY + 5, ICON_W - 6, ICON_H - 5);
-
-		// Turret
-		g.fillRect(drawX + 5, drawY + 1, ICON_W - 10, 6);
-
-		// Cannon pointing downward
-		g.fillRect(drawX + (ICON_W / 2) - 1, drawY + ICON_H - 4, 2, 4);
-	}
-
-	// Draws a mini player tank icon (facing upward) at (drawX, drawY)
-	private void drawPlayerIcon(Graphics g, int drawX, int drawY) {
-		Color bodyColor  = new Color(220, 200, 0);
-		Color trackColor = new Color(160, 140, 0);
-
-		g.setColor(trackColor);
-		g.fillRect(drawX,              drawY + 3, 3, ICON_H - 3);
-		g.fillRect(drawX + ICON_W - 3, drawY + 3, 3, ICON_H - 3);
-
-		g.setColor(bodyColor);
-		g.fillRect(drawX + 3, drawY + 3, ICON_W - 6, ICON_H - 3);
-		g.fillRect(drawX + 5, drawY + 7, ICON_W - 10, 6);
-
-		// Cannon pointing upward
-		g.fillRect(drawX + (ICON_W / 2) - 1, drawY, 2, 5);
-	}
-
-	// ---------------------------------------------------------------
-	// Draws a horizontal separator line
 	private void drawSep(Graphics g, int y) {
-		g.setColor(new Color(80, 80, 80));
-		g.fillRect(10, y, HUD_WIDTH - 20, 1);
+		g.setColor(new Color(55, 55, 55));
+		g.fillRect(4, y, CONTENT_W - 8, 1);
 	}
 
-	// ---------------------------------------------------------------
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		Graphics2D g2 = (Graphics2D) g;
-		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-		                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		int centerX = CONTENT_W / 2;
 
-		int centerX = HUD_WIDTH / 2;
+		if(imgBorderStrip != null) {
+			g.drawImage(imgBorderStrip, CONTENT_W, 0, BORDER_W, HUD_HEIGHT, null);
+		} else {
+			for(int y = 0; y < HUD_HEIGHT; y += 8) {
+				g.setColor(new Color(181, 49, 33));
+				g.fillRect(CONTENT_W, y, BORDER_W, 4);
+				g.setColor(new Color(80, 20, 10));
+				g.fillRect(CONTENT_W, y + 4, BORDER_W, 4);
+			}
+		}
 
-		// ---- LEFT ACCENT STRIP ----
-		g.setColor(new Color(55, 50, 40));
-		g.fillRect(0, 0, 4, HUD_HEIGHT);
-
-		// ============================================================
-		// ENEMY SECTION
-		// ============================================================
-		g.setColor(new Color(190, 190, 190));
-		g.setFont(new Font("Monospaced", Font.BOLD, 10));
-		FontMetrics enemyMetrics = g.getFontMetrics();
+		g.setColor(new Color(210, 210, 210));
+		g.setFont(new Font("Monospaced", Font.BOLD, 9));
+		FontMetrics fm = g.getFontMetrics();
 		String enemyLabel = "ENEMY";
-		g.drawString(enemyLabel,
-			centerX - enemyMetrics.stringWidth(enemyLabel) / 2,
-			SECTION_ENEMY_Y);
+		g.drawString(enemyLabel, centerX - fm.stringWidth(enemyLabel) / 2, ENEMY_LABEL_Y);
 
-		// 2-column grid — right column fills first (matches original NES style)
-		int gridW      = ICON_W * 2 + ICON_GAP_X;
-		int gridStartX = centerX - gridW / 2;
+		int gridTotalW = ICON_W * 2 + ICON_GAP;
+		int gridStartX = centerX - gridTotalW / 2;
 
 		for(int slot = 0; slot < MAX_ENEMIES; slot++) {
-			// NES fills right column first: slot 0 → col 1 (right), slot 1 → col 0 (left)
-			int col  = (slot % 2 == 0) ? 1 : 0;
-			int row  = slot / 2;
-			int iconX = gridStartX + col * (ICON_W + ICON_GAP_X);
-			int iconY = GRID_START_Y + row * (ICON_H + ICON_GAP_Y);
+			int col;
+			if(slot % 2 == 0) {
+				col = 1;
+			} else {
+				col = 0;
+			}
+			int row   = slot / 2;
+			int iconX = gridStartX + col * (ICON_W + ICON_GAP);
+			int iconY = GRID_Y + row * (ICON_H + 2);
 			boolean active = slot < enemyCount;
-			drawEnemyIcon(g, iconX, iconY, active);
+
+			if(active && imgEnemyActive != null) {
+				g.drawImage(imgEnemyActive, iconX, iconY, ICON_W, ICON_H, null);
+			} else if(!active && imgEnemyDead != null) {
+				g.drawImage(imgEnemyDead, iconX, iconY, ICON_W, ICON_H, null);
+			} else {
+				if(active) {
+					g.setColor(new Color(181, 49, 33));
+				} else {
+					g.setColor(new Color(60, 60, 60));
+				}
+				g.fillRect(iconX + 1, iconY + 1, ICON_W - 2, ICON_H - 2);
+			}
 		}
 
 		drawSep(g, SEP1_Y);
 
-		// ============================================================
-		// 1P SECTION
-		// ============================================================
-		// "1P" label — yellow, left-aligned
 		g.setColor(new Color(220, 200, 0));
-		g.setFont(new Font("Monospaced", Font.BOLD, 14));
-		g.drawString("1P", 16, SECTION_1P_Y);
+		g.setFont(new Font("Monospaced", Font.BOLD, 11));
+		g.drawString("I-", 6, LABEL_1P_Y);
 
-		// "SCORE" sub-label — light grey
-		g.setColor(new Color(160, 160, 160));
-		g.setFont(new Font("Monospaced", Font.PLAIN, 9));
-		g.drawString("SCORE", 16, SECTION_1P_Y + 14);
+		FontMetrics hiMetrics = g.getFontMetrics();
+		String hiLabel = "HI-20000";
+		g.drawString(hiLabel, CONTENT_W - 4 - hiMetrics.stringWidth(hiLabel), LABEL_1P_Y);
 
-		// Score value — white, zero-padded to 6 digits, right-aligned
-		g.setColor(Color.WHITE);
-		g.setFont(new Font("Monospaced", Font.BOLD, 15));
+		g.setColor(new Color(181, 49, 33));
+		g.setFont(new Font("Monospaced", Font.BOLD, 13));
 		String scoreStr = String.format("%06d", score);
 		FontMetrics scoreMetrics = g.getFontMetrics();
-		g.drawString(scoreStr,
-			HUD_WIDTH - 14 - scoreMetrics.stringWidth(scoreStr),
-			SECTION_1P_Y + 32);
+		g.drawString(scoreStr, CONTENT_W - 4 - scoreMetrics.stringWidth(scoreStr), SCORE_Y);
 
 		drawSep(g, SEP2_Y);
 
-		// ============================================================
-		// LIVES SECTION
-		// ============================================================
-		drawPlayerIcon(g, 16, SECTION_LIVES_Y - 2);
+		int lifeIconY = LIVES_Y - 18;
+		if(imgLifeIcon != null) {
+			g.drawImage(imgLifeIcon, 8, lifeIconY, 18, 18, null);
+		} else {
+			g.setColor(new Color(220, 200, 0));
+			g.fillRect(8, lifeIconY, 14, 14);
+		}
 
-		// "×" symbol
-		g.setColor(new Color(180, 180, 180));
-		g.setFont(new Font("Monospaced", Font.PLAIN, 11));
-		g.drawString("x", 35, SECTION_LIVES_Y + 10);
-
-		// Lives count
-		g.setColor(Color.WHITE);
-		g.setFont(new Font("Monospaced", Font.BOLD, 16));
-		g.drawString(String.valueOf(lives), 47, SECTION_LIVES_Y + 12);
+		g.setColor(new Color(210, 210, 210));
+		g.setFont(new Font("Monospaced", Font.BOLD, 13));
+		g.drawString("x" + lives, 30, LIVES_Y);
 
 		drawSep(g, SEP3_Y);
 
-		// ============================================================
-		// STAGE SECTION
-		// ============================================================
-		g.setColor(new Color(170, 170, 170));
-		g.setFont(new Font("Monospaced", Font.PLAIN, 9));
-		FontMetrics stageLabelMetrics = g.getFontMetrics();
-		String stageLabel = "STAGE";
-		g.drawString(stageLabel,
-			centerX - stageLabelMetrics.stringWidth(stageLabel) / 2,
-			SECTION_STAGE_Y);
+		if(imgFlag != null) {
+			g.drawImage(imgFlag, centerX - 16, FLAG_Y, 32, 26, null);
+		} else {
+			g.setColor(new Color(181, 49, 33));
+			g.fillRect(centerX - 8, FLAG_Y, 14, 12);
+		}
 
-		// Stage number box
-		int boxW = 52;
-		int boxH = 34;
-		int boxX = centerX - boxW / 2;
-		int boxY = SECTION_STAGE_Y + 5;
-
-		g.setColor(new Color(50, 50, 50));
-		g.fillRect(boxX, boxY, boxW, boxH);
-		g.setColor(new Color(100, 95, 70));
-		g.drawRect(boxX, boxY, boxW, boxH);
-
-		g.setColor(Color.WHITE);
+		g.setColor(new Color(210, 210, 210));
 		g.setFont(new Font("Monospaced", Font.BOLD, 20));
 		FontMetrics stageMetrics = g.getFontMetrics();
 		String levelStr = String.format("%02d", level);
-		g.drawString(levelStr,
-			boxX + (boxW - stageMetrics.stringWidth(levelStr)) / 2,
-			boxY + boxH - 7);
+		g.drawString(levelStr, centerX - stageMetrics.stringWidth(levelStr) / 2, STAGE_NUM_Y);
 
 		drawSep(g, SEP4_Y);
 	}

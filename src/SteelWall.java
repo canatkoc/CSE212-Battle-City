@@ -4,5 +4,5 @@ public class SteelWall extends Obstacle{
 		super("Steel Wall", x, y, width, height, false);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 }

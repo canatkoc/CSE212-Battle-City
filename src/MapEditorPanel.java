@@ -18,10 +18,8 @@ public class MapEditorPanel extends JPanel {
 	private static final int ROWS = 15;
 	private static final int COLS = 16;
 
-	// Editor grid — 0:Empty 1:Brick 2:Steel 3:Bush 4:Water
 	private int[][] editorGrid;
 
-	// Keyboard cursor — moved with arrow keys
 	private int cursorRow = 0;
 	private int cursorCol = 0;
 
@@ -34,7 +32,6 @@ public class MapEditorPanel extends JPanel {
 		editorGrid = new int[ROWS][COLS];
 		clearGrid();
 
-		// Arrow keys → move cursor | SPACE → cycle tile
 		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -49,14 +46,13 @@ public class MapEditorPanel extends JPanel {
 				} else if(key == KeyEvent.VK_D && cursorCol < COLS - 1) {
 					cursorCol++;
 				} else if(key == KeyEvent.VK_SPACE) {
-					cycleTile(); // SPACE: cycle through tile types
+					cycleTile();
 				}
 
 				repaint();
 			}
 		});
 
-		// Mouse click → jump cursor to that cell (does not paint)
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -66,40 +62,35 @@ public class MapEditorPanel extends JPanel {
 				if(row >= 0 && row < ROWS && col >= 0 && col < COLS) {
 					cursorRow = row;
 					cursorCol = col;
-					requestFocusInWindow(); // Reclaim focus after mouse click
+					requestFocusInWindow();
 					repaint();
 				}
 			}
 		});
 	}
 
-	// Grab keyboard focus automatically when added to the screen
 	@Override
 	public void addNotify() {
 		super.addNotify();
 		requestFocusInWindow();
 	}
 
-	// ---------------------------------------------------------------
-	// Called on SPACE — cycles the tile at the cursor position
-	// 0(Empty) → 1(Brick) → 2(Steel) → 4(Water) → 3(Bush) → 0(Empty)
 	private void cycleTile() {
 		int current = editorGrid[cursorRow][cursorCol];
 
 		if(current == 0) {
-			editorGrid[cursorRow][cursorCol] = 1; // Empty → Brick
+			editorGrid[cursorRow][cursorCol] = 1;
 		} else if(current == 1) {
-			editorGrid[cursorRow][cursorCol] = 2; // Brick → Steel
+			editorGrid[cursorRow][cursorCol] = 2;
 		} else if(current == 2) {
-			editorGrid[cursorRow][cursorCol] = 4; // Steel → Water
+			editorGrid[cursorRow][cursorCol] = 4;
 		} else if(current == 4) {
-			editorGrid[cursorRow][cursorCol] = 3; // Water → Bush
+			editorGrid[cursorRow][cursorCol] = 3;
 		} else if(current == 3) {
-			editorGrid[cursorRow][cursorCol] = 0; // Bush → Empty (cleared)
+			editorGrid[cursorRow][cursorCol] = 0;
 		}
 	}
 
-	// ---------------------------------------------------------------
 	public void clearGrid() {
 		for(int row = 0; row < ROWS; row++) {
 			for(int col = 0; col < COLS; col++) {
@@ -113,8 +104,6 @@ public class MapEditorPanel extends JPanel {
 		return editorGrid;
 	}
 
-	// ---------------------------------------------------------------
-	// SAVE — write grid to CSV
 	public void saveMap() {
 		java.io.File mapsDir = new java.io.File("maps");
 		if(!mapsDir.exists()) {
@@ -163,8 +152,6 @@ public class MapEditorPanel extends JPanel {
 		}
 	}
 
-	// ---------------------------------------------------------------
-	// LOAD — read grid from CSV
 	public void loadMap() {
 		JFileChooser fileChooser = new JFileChooser("maps");
 		fileChooser.setDialogTitle("Load Map");
@@ -208,7 +195,6 @@ public class MapEditorPanel extends JPanel {
 		}
 	}
 
-	// ---------------------------------------------------------------
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -219,7 +205,6 @@ public class MapEditorPanel extends JPanel {
 				int pixelY = row * TILE_SIZE;
 				int tile = editorGrid[row][col];
 
-				// Tile fill
 				if(tile == 1) {
 					g.setColor(new Color(160, 82, 45));
 				} else if(tile == 2) {
@@ -233,13 +218,11 @@ public class MapEditorPanel extends JPanel {
 				}
 				g.fillRect(pixelX, pixelY, TILE_SIZE, TILE_SIZE);
 
-				// Grid line
 				g.setColor(new Color(50, 50, 50));
 				g.drawRect(pixelX, pixelY, TILE_SIZE, TILE_SIZE);
 			}
 		}
 
-		// Cursor — active cell highlight (outer yellow + inner white border)
 		int cursorX = cursorCol * TILE_SIZE;
 		int cursorY = cursorRow * TILE_SIZE;
 		g.setColor(Color.YELLOW);

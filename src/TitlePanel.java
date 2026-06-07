@@ -9,49 +9,35 @@ public class TitlePanel extends JPanel implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 
-	// Panel fills the entire frame content area (game 640 + HUD 160 wide)
 	private static final int PANEL_W       = 800;
 	private static final int PANEL_H       = 600;
 
-	// Title background: NES 256×224 scaled 2.5× = 640×560
 	private static final int BG_W          = 640;
 	private static final int BG_H          = 560;
 	private static final int BG_OFFSET_X   = 0;
-	private static final int BG_OFFSET_Y   = (PANEL_H - BG_H) / 2;  // = 20
+	private static final int BG_OFFSET_Y   = (PANEL_H - BG_H) / 2;
 
-	// Cursor sprite drawn size at 2.5×
 	private static final int CURSOR_W      = 25;
 	private static final int CURSOR_H      = 33;
 
-	// Cursor X in panel coordinates (NES x=65 * 2.5 + BG_OFFSET_X = 162)
 	private static final int CURSOR_X      = BG_OFFSET_X + 162;
 
-	// Cursor Y (top edge) in panel coordinates for each menu row.
-	// Formula: NES_top_y * 2.5 + BG_OFFSET_Y
-	//   1 PLAYER      NES y=125 → 125*2.5 + 20 = 332
-	//   2 PLAYERS     NES y=141 → 141*2.5 + 20 = 372
-	//   CONSTRUCTION  NES y=157 → 157*2.5 + 20 = 412
 	private static final int[] CURSOR_ROW_Y = { 332, 372, 412 };
 
-	// Menu item indices
 	private static final int ITEM_1PLAYER      = 0;
 	private static final int ITEM_2PLAYERS     = 1;
 	private static final int ITEM_CONSTRUCTION = 2;
 	private static final int ITEM_COUNT        = 3;
 
-	// Cursor blink interval in milliseconds
 	private static final int BLINK_MS          = 500;
 
-	// --- State ---
 	private int     selectedItem  = ITEM_1PLAYER;
 	private boolean cursorVisible = true;
 	private boolean isRunning     = false;
 
-	// --- Images ---
 	private BufferedImage titleBackground;
 	private BufferedImage cursorSprite;
 
-	// --- Callback interface ---
 	public interface TitleListener {
 		void onOnePlayer();
 		void onConstruction();
@@ -59,7 +45,6 @@ public class TitlePanel extends JPanel implements Runnable {
 
 	private TitleListener titleListener;
 
-	// ------------------------------------------------------------------
 	public TitlePanel(TitleListener listener) {
 		// TODO Auto-generated constructor stub
 		this.titleListener = listener;
@@ -89,8 +74,6 @@ public class TitlePanel extends JPanel implements Runnable {
 		});
 	}
 
-	// ------------------------------------------------------------------
-	// Loads title background and cursor sprite from the images/ folder
 	private void loadImages() {
 		try {
 			titleBackground = ImageIO.read(new File("images/titleBackground.png"));
@@ -104,8 +87,6 @@ public class TitlePanel extends JPanel implements Runnable {
 		}
 	}
 
-	// ------------------------------------------------------------------
-	// Fires the appropriate callback when the player presses Enter/Space
 	private void handleSelect() {
 		if(selectedItem == ITEM_1PLAYER) {
 			titleListener.onOnePlayer();
@@ -119,8 +100,6 @@ public class TitlePanel extends JPanel implements Runnable {
 		}
 	}
 
-	// ------------------------------------------------------------------
-	// Starts the background blink thread
 	public void startThread() {
 		if(isRunning) {
 			return;
@@ -131,13 +110,10 @@ public class TitlePanel extends JPanel implements Runnable {
 		thread.start();
 	}
 
-	// Stops the blink thread
 	public void stopThread() {
 		isRunning = false;
 	}
 
-	// ------------------------------------------------------------------
-	// Blink loop — toggles cursorVisible every BLINK_MS milliseconds
 	@Override
 	public void run() {
 		while(isRunning) {
@@ -151,21 +127,17 @@ public class TitlePanel extends JPanel implements Runnable {
 		}
 	}
 
-	// ------------------------------------------------------------------
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		// Black fill for the entire panel
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, PANEL_W, PANEL_H);
 
-		// Title background scaled to fill panel
 		if(titleBackground != null) {
 			g.drawImage(titleBackground, BG_OFFSET_X, BG_OFFSET_Y, BG_W, BG_H, null);
 		}
 
-		// Blinking cursor next to the selected menu item
 		if(cursorVisible && cursorSprite != null) {
 			int cursorY = CURSOR_ROW_Y[selectedItem];
 			g.drawImage(cursorSprite, CURSOR_X, cursorY, CURSOR_W, CURSOR_H, null);
