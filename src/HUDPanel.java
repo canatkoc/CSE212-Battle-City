@@ -9,29 +9,29 @@ public class HUDPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final int HUD_WIDTH  = 160;
+	private static final int HUD_WIDTH = 160;
 	private static final int HUD_HEIGHT = 600;
 	private static final int MAX_ENEMIES = 20;
 
-	private static final int BORDER_W   = 16;
-	private static final int CONTENT_W  = HUD_WIDTH - BORDER_W;
+	private static final int BORDER_W = 16;
+	private static final int CONTENT_W = HUD_WIDTH - BORDER_W;
 
-	private static final int ICON_W     = 14;
-	private static final int ICON_H     = 18;
-	private static final int ICON_GAP   = 3;
+	private static final int ICON_W = 14;
+	private static final int ICON_H = 18;
+	private static final int ICON_GAP = 3;
 
 	private static final int ENEMY_LABEL_Y = 16;
-	private static final int GRID_Y        = 24;
-	private static final int SEP1_Y        = 232;
-	private static final int LABEL_1P_Y    = 250;
-	private static final int SCORE_Y       = 268;
-	private static final int SEP2_Y        = 282;
-	private static final int LIVES_Y       = 308;
-	private static final int SEP3_Y        = 332;
-	private static final int FLAG_Y        = 352;
-	private static final int STAGE_NUM_Y   = 400;
-	private static final int SEP4_Y        = 430;
-	private static final int PAUSE_BTN_Y   = 448;
+	private static final int GRID_Y = 24;
+	private static final int SEP1_Y = 232;
+	private static final int LABEL_1P_Y = 250;
+	private static final int SCORE_Y = 268;
+	private static final int SEP2_Y = 282;
+	private static final int LIVES_Y = 308;
+	private static final int SEP3_Y = 332;
+	private static final int FLAG_Y = 352;
+	private static final int STAGE_NUM_Y = 400;
+	private static final int SEP4_Y = 430;
+	private static final int PAUSE_BTN_Y = 448;
 
 	private int lives;
 	private int score;
@@ -48,9 +48,9 @@ public class HUDPanel extends JPanel {
 
 	public HUDPanel(int lives, int score, int level) {
 		// TODO Auto-generated constructor stub
-		this.lives      = lives;
-		this.score      = score;
-		this.level      = level;
+		this.lives = lives;
+		this.score = score;
+		this.level = level;
 		this.enemyCount = MAX_ENEMIES;
 
 		setPreferredSize(new Dimension(HUD_WIDTH, HUD_HEIGHT));
@@ -104,11 +104,11 @@ public class HUDPanel extends JPanel {
 				int argb = src.getRGB(x, y);
 				int a = (argb >> 24) & 0xFF;
 				int r = (argb >> 16) & 0xFF;
-				int gg = (argb >> 8)  & 0xFF;
-				int b =   argb        & 0xFF;
-				r  = r  / 6;
+				int gg = (argb >> 8) & 0xFF;
+				int b = argb & 0xFF;
+				r = r / 6;
 				gg = gg / 6;
-				b  = b  / 6;
+				b = b / 6;
 				dim.setRGB(x, y, (a << 24) | (r << 16) | (gg << 8) | b);
 			}
 		}
@@ -177,7 +177,7 @@ public class HUDPanel extends JPanel {
 			} else {
 				col = 0;
 			}
-			int row   = slot / 2;
+			int row = slot / 2;
 			int iconX = gridStartX + col * (ICON_W + ICON_GAP);
 			int iconY = GRID_Y + row * (ICON_H + 2);
 			boolean active = slot < enemyCount;

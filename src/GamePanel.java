@@ -17,8 +17,8 @@ import java.util.Date;
 public class GamePanel extends JPanel implements Runnable {
 
 	private static final long serialVersionUID = 1L;
-	private static final int TILE_SIZE    = 40;
-	private static final int PANEL_WIDTH  = 640;
+	private static final int TILE_SIZE = 40;
+	private static final int PANEL_WIDTH = 640;
 	private static final int PANEL_HEIGHT = 600;
 
 	private static final int EAGLE_COL = 7;
@@ -31,52 +31,52 @@ public class GamePanel extends JPanel implements Runnable {
 	private static final int GAMEOVER_SPRITE_H = 64;
 	private static final int GAMEOVER_TARGET_Y = (PANEL_HEIGHT - GAMEOVER_SPRITE_H * 2) / 2;
 
-	private PlayerTank           playerTank;
-	private Eagle                eagle;
-	private ArrayList<Obstacle>  obstacles;
-	private ArrayList<Bullet>    bullets;
+	private PlayerTank playerTank;
+	private Eagle eagle;
+	private ArrayList<Obstacle> obstacles;
+	private ArrayList<Bullet> bullets;
 	private ArrayList<EnemyTank> enemies;
-	private ArrayList<Bullet>    enemyBullets;
-	private HUDPanel             hud;
+	private ArrayList<Bullet> enemyBullets;
+	private HUDPanel hud;
 
-	private Thread  gameThread;
+	private Thread gameThread;
 	private boolean isRunning;
-	private boolean isPaused    = false;
-	private boolean gameOver    = false;
-	private boolean stageClear  = false;
+	private boolean isPaused = false;
+	private boolean gameOver = false;
+	private boolean stageClear = false;
 
-	private int playerDir           = 0;
-	private int fireCooldown        = 0;
-	private int playerLives         = 3;
+	private int playerDir = 0;
+	private int fireCooldown = 0;
+	private int playerLives = 3;
 	private int playerInvincibility = 0;
-	private int score               = 0;
+	private int score = 0;
 
-	private int totalEnemies   = 20;
-	private int difficulty     = 1;
+	private int totalEnemies = 20;
+	private int difficulty = 1;
 	private int spawnedEnemies = 0;
-	private int spawnCooldown  = 120;
+	private int spawnCooldown = 120;
 
-	private boolean upPressed    = false;
-	private boolean downPressed  = false;
-	private boolean leftPressed  = false;
+	private boolean upPressed = false;
+	private boolean downPressed = false;
+	private boolean leftPressed = false;
 	private boolean rightPressed = false;
 	private boolean shootPressed = false;
 
-	private int     introTimer    = 0;
-	private int     currentLevel  = 1;
-	private int     gameOverSlide   = -1;
-	private int     gameOverDelay   = 0;
-	private int     stageClearDelay      = -1;
-	private boolean nameAsked            = false;
-	private boolean waitingForNextLevel  = false;
-	private int     infiniteRound        = 0;
+	private int introTimer = 0;
+	private int currentLevel = 1;
+	private int gameOverSlide = -1;
+	private int gameOverDelay = 0;
+	private int stageClearDelay = -1;
+	private boolean nameAsked = false;
+	private boolean waitingForNextLevel = false;
+	private int infiniteRound = 0;
 
 	private ArrayList<int[]> scorePopups;
 
 	private ArrayList<PowerUp> powerUps;
-	private static final int CLOCK_DURATION  = 300;
+	private static final int CLOCK_DURATION = 300;
 	private static final int SHOVEL_DURATION = 600;
-	private int clockTimer  = 0;
+	private int clockTimer = 0;
 	private int shovelTimer = 0;
 	private int[][] savedEagleArea = null;
 
@@ -130,25 +130,25 @@ public class GamePanel extends JPanel implements Runnable {
 			public void keyPressed(KeyEvent e) {
 				int key = e.getKeyCode();
 				if(key == KeyEvent.VK_W) {
-					upPressed    = true;
+					upPressed = true;
 				}
 				if(key == KeyEvent.VK_S) {
-					downPressed  = true;
+					downPressed = true;
 				}
 				if(key == KeyEvent.VK_A) {
-					leftPressed  = true;
+					leftPressed = true;
 				}
 				if(key == KeyEvent.VK_D) {
 					rightPressed = true;
 				}
 				if(key == KeyEvent.VK_UP) {
-					upPressed    = true;
+					upPressed = true;
 				}
 				if(key == KeyEvent.VK_DOWN) {
-					downPressed  = true;
+					downPressed = true;
 				}
 				if(key == KeyEvent.VK_LEFT) {
-					leftPressed  = true;
+					leftPressed = true;
 				}
 				if(key == KeyEvent.VK_RIGHT) {
 					rightPressed = true;
@@ -172,25 +172,25 @@ public class GamePanel extends JPanel implements Runnable {
 			public void keyReleased(KeyEvent e) {
 				int key = e.getKeyCode();
 				if(key == KeyEvent.VK_W) {
-					upPressed    = false;
+					upPressed = false;
 				}
 				if(key == KeyEvent.VK_S) {
-					downPressed  = false;
+					downPressed = false;
 				}
 				if(key == KeyEvent.VK_A) {
-					leftPressed  = false;
+					leftPressed = false;
 				}
 				if(key == KeyEvent.VK_D) {
 					rightPressed = false;
 				}
 				if(key == KeyEvent.VK_UP) {
-					upPressed    = false;
+					upPressed = false;
 				}
 				if(key == KeyEvent.VK_DOWN) {
-					downPressed  = false;
+					downPressed = false;
 				}
 				if(key == KeyEvent.VK_LEFT) {
-					leftPressed  = false;
+					leftPressed = false;
 				}
 				if(key == KeyEvent.VK_RIGHT) {
 					rightPressed = false;
@@ -201,13 +201,13 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 		});
 
-		obstacles    = new ArrayList<Obstacle>();
-		bullets      = new ArrayList<Bullet>();
-		enemies      = new ArrayList<EnemyTank>();
+		obstacles = new ArrayList<Obstacle>();
+		bullets = new ArrayList<Bullet>();
+		enemies = new ArrayList<EnemyTank>();
 		enemyBullets = new ArrayList<Bullet>();
-		scorePopups  = new ArrayList<int[]>();
-		powerUps     = new ArrayList<PowerUp>();
-		playerTank   = new PlayerTank(4, 3, 1);
+		scorePopups = new ArrayList<int[]>();
+		powerUps = new ArrayList<PowerUp>();
+		playerTank = new PlayerTank(4, 3, 1);
 
 		eagle = new Eagle(EAGLE_COL * TILE_SIZE, EAGLE_ROW * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 
@@ -220,22 +220,22 @@ public class GamePanel extends JPanel implements Runnable {
 
 	private void loadSprites() {
 		try {
-			imgPlayerUp       = ImageIO.read(new File("images/playerUp.png"));
-			imgPlayerDown     = ImageIO.read(new File("images/playerDown.png"));
-			imgPlayerLeft     = ImageIO.read(new File("images/playerLeft.png"));
-			imgPlayerRight    = ImageIO.read(new File("images/playerRight.png"));
-			imgEnemyUp        = toGreyscale(ImageIO.read(new File("images/enemyUp.png")));
-			imgEnemyDown      = toGreyscale(ImageIO.read(new File("images/enemyDown.png")));
-			imgEnemyLeft      = toGreyscale(ImageIO.read(new File("images/enemyLeft.png")));
-			imgEnemyRight     = toGreyscale(ImageIO.read(new File("images/enemyRight.png")));
-			imgBrick          = ImageIO.read(new File("images/brick.png"));
-			imgSteel          = ImageIO.read(new File("images/steel.png"));
-			imgWater          = ImageIO.read(new File("images/water.png"));
-			imgBush           = ImageIO.read(new File("images/bush.png"));
-			imgEagle          = ImageIO.read(new File("images/eagle.png"));
+			imgPlayerUp = ImageIO.read(new File("images/playerUp.png"));
+			imgPlayerDown = ImageIO.read(new File("images/playerDown.png"));
+			imgPlayerLeft = ImageIO.read(new File("images/playerLeft.png"));
+			imgPlayerRight = ImageIO.read(new File("images/playerRight.png"));
+			imgEnemyUp = toGreyscale(ImageIO.read(new File("images/enemyUp.png")));
+			imgEnemyDown = toGreyscale(ImageIO.read(new File("images/enemyDown.png")));
+			imgEnemyLeft = toGreyscale(ImageIO.read(new File("images/enemyLeft.png")));
+			imgEnemyRight = toGreyscale(ImageIO.read(new File("images/enemyRight.png")));
+			imgBrick = ImageIO.read(new File("images/brick.png"));
+			imgSteel = ImageIO.read(new File("images/steel.png"));
+			imgWater = ImageIO.read(new File("images/water.png"));
+			imgBush = ImageIO.read(new File("images/bush.png"));
+			imgEagle = ImageIO.read(new File("images/eagle.png"));
 			imgEagleDestroyed = ImageIO.read(new File("images/eagleDestroyed.png"));
-			imgTextGame       = ImageIO.read(new File("images/textGame.png"));
-			imgTextOver       = ImageIO.read(new File("images/textOver.png"));
+			imgTextGame = ImageIO.read(new File("images/textGame.png"));
+			imgTextOver = ImageIO.read(new File("images/textOver.png"));
 		} catch(IOException ex) {
 			ex.printStackTrace();
 		}
@@ -258,7 +258,7 @@ public class GamePanel extends JPanel implements Runnable {
 			for(int col = 0; col < mapData[row].length; col++) {
 				int pixelX = col * TILE_SIZE;
 				int pixelY = row * TILE_SIZE;
-				int tile   = mapData[row][col];
+				int tile = mapData[row][col];
 
 				if(tile == 1) {
 					obstacles.add(new BrickWall(pixelX, pixelY, TILE_SIZE, TILE_SIZE));
@@ -294,25 +294,25 @@ public class GamePanel extends JPanel implements Runnable {
 			scorePopups.clear();
 			powerUps.clear();
 			eagle.setDestroyed(false);
-			spawnedEnemies      = 0;
-			spawnCooldown       = 120;
-			score               = 0;
-			playerLives         = 3;
+			spawnedEnemies = 0;
+			spawnCooldown = 120;
+			score = 0;
+			playerLives = 3;
 			playerInvincibility = 0;
-			clockTimer          = 0;
-			shovelTimer         = 0;
-			savedEagleArea      = null;
-			gameOver            = false;
-			stageClear          = false;
-			isPaused            = false;
-			gameOverSlide       = -1;
-			gameOverDelay       = 0;
-			stageClearDelay     = -1;
-			nameAsked           = false;
+			clockTimer = 0;
+			shovelTimer = 0;
+			savedEagleArea = null;
+			gameOver = false;
+			stageClear = false;
+			isPaused = false;
+			gameOverSlide = -1;
+			gameOverDelay = 0;
+			stageClearDelay = -1;
+			nameAsked = false;
 			waitingForNextLevel = false;
-			infiniteRound       = 0;
-			currentLevel        = parseLevel(filePath);
-			introTimer          = 180;
+			infiniteRound = 0;
+			currentLevel = parseLevel(filePath);
+			introTimer = 180;
 			playerTank.resetStarLevel();
 			respawnPlayer();
 			hud.setLives(playerLives);
@@ -351,7 +351,7 @@ public class GamePanel extends JPanel implements Runnable {
 			return;
 		}
 		gameThread = new Thread(this);
-		isRunning  = true;
+		isRunning = true;
 		gameThread.start();
 	}
 
@@ -429,7 +429,7 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	private boolean collidesWithSolid(int newX, int newY) {
-		int tankWidth  = playerTank.width;
+		int tankWidth = playerTank.width;
 		int tankHeight = playerTank.height;
 
 		if(newX < 0 || newY < 0 || newX + tankWidth > getWidth() || newY + tankHeight > getHeight()) {
@@ -437,7 +437,7 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 
 		if(eagle != null && !eagle.isDestroyed()) {
-			if(newX < eagle.x + eagle.width  && newX + tankWidth  > eagle.x && newY < eagle.y + eagle.height && newY + tankHeight > eagle.y) {
+			if(newX < eagle.x + eagle.width && newX + tankWidth > eagle.x && newY < eagle.y + eagle.height && newY + tankHeight > eagle.y) {
 				return true;
 			}
 		}
@@ -447,7 +447,7 @@ public class GamePanel extends JPanel implements Runnable {
 			if(obstacle instanceof Bush) {
 				continue;
 			}
-			if(newX < obstacle.x + obstacle.width  && newX + tankWidth  > obstacle.x && newY < obstacle.y + obstacle.height && newY + tankHeight > obstacle.y) {
+			if(newX < obstacle.x + obstacle.width && newX + tankWidth > obstacle.x && newY < obstacle.y + obstacle.height && newY + tankHeight > obstacle.y) {
 				return true;
 			}
 		}
@@ -456,7 +456,7 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	private boolean enemyCollidesWithSolid(EnemyTank enemy, int newX, int newY) {
-		int tankWidth  = enemy.width;
+		int tankWidth = enemy.width;
 		int tankHeight = enemy.height;
 
 		if(newX < 0 || newY < 0 || newX + tankWidth > getWidth() || newY + tankHeight > getHeight()) {
@@ -464,7 +464,7 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 
 		if(eagle != null && !eagle.isDestroyed()) {
-			if(newX < eagle.x + eagle.width  && newX + tankWidth  > eagle.x && newY < eagle.y + eagle.height && newY + tankHeight > eagle.y) {
+			if(newX < eagle.x + eagle.width && newX + tankWidth > eagle.x && newY < eagle.y + eagle.height && newY + tankHeight > eagle.y) {
 				return true;
 			}
 		}
@@ -474,12 +474,12 @@ public class GamePanel extends JPanel implements Runnable {
 			if(obstacle instanceof Bush) {
 				continue;
 			}
-			if(newX < obstacle.x + obstacle.width  && newX + tankWidth  > obstacle.x && newY < obstacle.y + obstacle.height && newY + tankHeight > obstacle.y) {
+			if(newX < obstacle.x + obstacle.width && newX + tankWidth > obstacle.x && newY < obstacle.y + obstacle.height && newY + tankHeight > obstacle.y) {
 				return true;
 			}
 		}
 
-		if(newX < playerTank.x + playerTank.width  && newX + tankWidth  > playerTank.x && newY < playerTank.y + playerTank.height && newY + tankHeight > playerTank.y) {
+		if(newX < playerTank.x + playerTank.width && newX + tankWidth > playerTank.x && newY < playerTank.y + playerTank.height && newY + tankHeight > playerTank.y) {
 			return true;
 		}
 
@@ -488,7 +488,7 @@ public class GamePanel extends JPanel implements Runnable {
 			if(other == enemy) {
 				continue;
 			}
-			if(newX < other.x + other.width  && newX + tankWidth  > other.x && newY < other.y + other.height && newY + tankHeight > other.y) {
+			if(newX < other.x + other.width && newX + tankWidth > other.x && newY < other.y + other.height && newY + tankHeight > other.y) {
 				return true;
 			}
 		}
@@ -500,16 +500,16 @@ public class GamePanel extends JPanel implements Runnable {
 		if(bullets.size() >= playerTank.getMaxBulletsOnScreen()) {
 			return;
 		}
-		int bulletSize  = 8;
+		int bulletSize = 8;
 		int bulletSpeed = 6;
 		int startX;
 		int startY;
 
 		if(playerDir == 0) {
-			startX = playerTank.x + (playerTank.width  / 2) - (bulletSize / 2);
+			startX = playerTank.x + (playerTank.width / 2) - (bulletSize / 2);
 			startY = playerTank.y - bulletSize;
 		} else if(playerDir == 1) {
-			startX = playerTank.x + (playerTank.width  / 2) - (bulletSize / 2);
+			startX = playerTank.x + (playerTank.width / 2) - (bulletSize / 2);
 			startY = playerTank.y + playerTank.height;
 		} else if(playerDir == 2) {
 			startX = playerTank.x - bulletSize;
@@ -526,16 +526,16 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	private void fireEnemyBullet(EnemyTank enemy) {
-		int bulletSize  = 8;
+		int bulletSize = 8;
 		int bulletSpeed = 4;
 		int startX;
 		int startY;
 
 		if(enemy.direction == 0) {
-			startX = enemy.x + (enemy.width  / 2) - (bulletSize / 2);
+			startX = enemy.x + (enemy.width / 2) - (bulletSize / 2);
 			startY = enemy.y - bulletSize;
 		} else if(enemy.direction == 1) {
-			startX = enemy.x + (enemy.width  / 2) - (bulletSize / 2);
+			startX = enemy.x + (enemy.width / 2) - (bulletSize / 2);
 			startY = enemy.y + enemy.height;
 		} else if(enemy.direction == 2) {
 			startX = enemy.x - bulletSize;
@@ -575,7 +575,7 @@ public class GamePanel extends JPanel implements Runnable {
 					continue;
 				}
 
-				if(bullet.x < obstacle.x + obstacle.width  && bullet.x + bullet.width  > obstacle.x && bullet.y < obstacle.y + obstacle.height && bullet.y + bullet.height > obstacle.y) {
+				if(bullet.x < obstacle.x + obstacle.width && bullet.x + bullet.width > obstacle.x && bullet.y < obstacle.y + obstacle.height && bullet.y + bullet.height > obstacle.y) {
 					if(obstacle instanceof BrickWall) {
 						obstacles.remove(j);
 					} else if(obstacle instanceof SteelWall && playerTank.canDestroySteel()) {
@@ -591,7 +591,7 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 
 			if(eagle != null && !eagle.isDestroyed()) {
-				if(bullet.x < eagle.x + eagle.width  && bullet.x + bullet.width  > eagle.x && bullet.y < eagle.y + eagle.height && bullet.y + bullet.height > eagle.y) {
+				if(bullet.x < eagle.x + eagle.width && bullet.x + bullet.width > eagle.x && bullet.y < eagle.y + eagle.height && bullet.y + bullet.height > eagle.y) {
 					eagle.setDestroyed(true);
 					bullets.remove(i);
 					bulletRemoved = true;
@@ -603,13 +603,13 @@ public class GamePanel extends JPanel implements Runnable {
 
 			for(int j = enemies.size() - 1; j >= 0; j--) {
 				EnemyTank enemy = enemies.get(j);
-				if(bullet.x < enemy.x + enemy.width  && bullet.x + bullet.width  > enemy.x && bullet.y < enemy.y + enemy.height && bullet.y + bullet.height > enemy.y) {
+				if(bullet.x < enemy.x + enemy.width && bullet.x + bullet.width > enemy.x && bullet.y < enemy.y + enemy.height && bullet.y + bullet.height > enemy.y) {
 					enemy.hp -= bullet.damage;
 					if(enemy.hp <= 0) {
-						int popupX = enemy.x + (enemy.width  / 2) - 12;
+						int popupX = enemy.x + (enemy.width / 2) - 12;
 						int popupY = enemy.y + (enemy.height / 2);
 						scorePopups.add(new int[]{popupX, popupY, 100, 60});
-						if(Math.random() < 0.30) {
+						if(Math.random() < 0.3) {
 							spawnRandomPowerUp(enemy.x, enemy.y);
 						}
 						enemies.remove(j);
@@ -624,6 +624,7 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 		}
 	}
+
 	private void updateEnemyBullets() {
 		for(int i = enemyBullets.size() - 1; i >= 0; i--) {
 			Bullet bullet = enemyBullets.get(i);
@@ -651,7 +652,7 @@ public class GamePanel extends JPanel implements Runnable {
 					continue;
 				}
 
-				if(bullet.x < obstacle.x + obstacle.width  && bullet.x + bullet.width  > obstacle.x && bullet.y < obstacle.y + obstacle.height && bullet.y + bullet.height > obstacle.y) {
+				if(bullet.x < obstacle.x + obstacle.width && bullet.x + bullet.width > obstacle.x && bullet.y < obstacle.y + obstacle.height && bullet.y + bullet.height > obstacle.y) {
 					if(obstacle instanceof BrickWall) {
 						obstacles.remove(j);
 					}
@@ -664,7 +665,7 @@ public class GamePanel extends JPanel implements Runnable {
 				continue;
 			}
 			if(eagle != null && !eagle.isDestroyed()) {
-				if(bullet.x < eagle.x + eagle.width  && bullet.x + bullet.width  > eagle.x && bullet.y < eagle.y + eagle.height && bullet.y + bullet.height > eagle.y) {
+				if(bullet.x < eagle.x + eagle.width && bullet.x + bullet.width > eagle.x && bullet.y < eagle.y + eagle.height && bullet.y + bullet.height > eagle.y) {
 					eagle.setDestroyed(true);
 					enemyBullets.remove(i);
 					bulletRemoved = true;
@@ -674,7 +675,7 @@ public class GamePanel extends JPanel implements Runnable {
 				continue;
 			}
 			if(playerInvincibility == 0 && !playerTank.isShieldActive()) {
-				if(bullet.x < playerTank.x + playerTank.width  && bullet.x + bullet.width  > playerTank.x && bullet.y < playerTank.y + playerTank.height && bullet.y + bullet.height > playerTank.y) {
+				if(bullet.x < playerTank.x + playerTank.width && bullet.x + bullet.width > playerTank.x && bullet.y < playerTank.y + playerTank.height && bullet.y + bullet.height > playerTank.y) {
 					playerLives--;
 					hud.setLives(playerLives);
 					enemyBullets.remove(i);
@@ -706,8 +707,8 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	private void advanceToNextLevel() {
-		int savedScore        = score;
-		int savedLives        = playerLives;
+		int savedScore = score;
+		int savedLives = playerLives;
 		int savedInfiniteRound;
 
 		String nextPath;
@@ -721,8 +722,8 @@ public class GamePanel extends JPanel implements Runnable {
 
 		loadMapFromFile(nextPath);
 
-		score         = savedScore;
-		playerLives   = savedLives;
+		score = savedScore;
+		playerLives = savedLives;
 		infiniteRound = savedInfiniteRound;
 		hud.setScore(score);
 		hud.setLives(playerLives);
@@ -761,38 +762,38 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	private int aimAtPlayer(EnemyTank enemy) {
-	    int diffX = playerTank.x - enemy.x;
-	    int diffY = playerTank.y - enemy.y;
+		int diffX = playerTank.x - enemy.x;
+		int diffY = playerTank.y - enemy.y;
 
-	    if(diffX < 0) {
-	        diffX = -diffX;
-	    }
-	    if(diffY < 0) {
-	        diffY = -diffY;
-	    }
+		if(diffX < 0) {
+			diffX = -diffX;
+		}
+		if(diffY < 0) {
+			diffY = -diffY;
+		}
 
-	    if(diffX > diffY) {
-	        if(playerTank.x > enemy.x) {
-	            return 3;
-	        } else {
-	            return 2;
-	        }
-	    } else {
-	        if(playerTank.y > enemy.y) {
-	            return 1;
-	        } else {
-	            return 0;
-	        }
-	    }
+		if(diffX > diffY) {
+			if(playerTank.x > enemy.x) {
+				return 3;
+			} else {
+				return 2;
+			}
+		} else {
+			if(playerTank.y > enemy.y) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
 	}
 
 	private int pickDirectionTowardPlayer(EnemyTank enemy) {
-	    int randomChance = (int)(Math.random() * 100);
-	    if(randomChance < 35) {
-	        return (int)(Math.random() * 4);
-	    } else {
-	        return aimAtPlayer(enemy);
-	    }
+		int randomChance = (int)(Math.random() * 100);
+		if(randomChance < 35) {
+			return (int)(Math.random() * 4);
+		} else {
+			return aimAtPlayer(enemy);
+		}
 	}
 
 	private void updateEnemies() {
@@ -810,7 +811,7 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 
 			if(enemy.moveCooldown == 0) {
-				enemy.direction    = pickDirectionTowardPlayer(enemy);
+				enemy.direction = pickDirectionTowardPlayer(enemy);
 				enemy.moveCooldown = 60 + (int)(Math.random() * 120);
 			}
 
@@ -828,7 +829,7 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 
 			if(enemyCollidesWithSolid(enemy, newX, newY)) {
-				enemy.direction    = pickDirectionTowardPlayer(enemy);
+				enemy.direction = pickDirectionTowardPlayer(enemy);
 				enemy.moveCooldown = 20 + (int)(Math.random() * 40);
 			} else {
 				enemy.x = newX;
@@ -836,7 +837,7 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 
 			if(enemy.fireCooldown == 0) {
-				enemy.direction    = aimAtPlayer(enemy);
+				enemy.direction = aimAtPlayer(enemy);
 				fireEnemyBullet(enemy);
 				if(difficulty == 0) {
 					enemy.fireCooldown = 90 + (int)(Math.random() * 90);
@@ -854,9 +855,9 @@ public class GamePanel extends JPanel implements Runnable {
 			triggerGameOver();
 			return;
 		}
-		playerTank.x        = 4 * TILE_SIZE;
-		playerTank.y        = 13 * TILE_SIZE;
-		playerDir           = 0;
+		playerTank.x = 4 * TILE_SIZE;
+		playerTank.y = 13 * TILE_SIZE;
+		playerDir = 0;
 		playerInvincibility = 120;
 		playerTank.resetStarLevel();
 		bullets.clear();
@@ -866,10 +867,11 @@ public class GamePanel extends JPanel implements Runnable {
 		if(gameOver) {
 			return;
 		}
-		gameOver      = true;
+		gameOver = true;
 		gameOverSlide = PANEL_HEIGHT;
 		gameOverDelay = 60;
 	}
+
 	private void saveScore(String playerName, int finalScore) {
 		Date now = new Date();
 		String dateStr = new SimpleDateFormat("yyyy-MM-dd").format(now);
@@ -892,6 +894,7 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 		}
 	}
+
 	private void spawnRandomPowerUp(int pixelX, int pixelY) {
 		int tileX = pixelX / TILE_SIZE;
 		int tileY = pixelY / TILE_SIZE;
@@ -932,7 +935,7 @@ public class GamePanel extends JPanel implements Runnable {
 		} else if(powerUpType == PowerUp.BOMB) {
 			for(int i = enemies.size() - 1; i >= 0; i--) {
 				EnemyTank enemy = enemies.get(i);
-				int popupX = enemy.x + (enemy.width  / 2) - 12;
+				int popupX = enemy.x + (enemy.width / 2) - 12;
 				int popupY = enemy.y + (enemy.height / 2);
 				scorePopups.add(new int[]{popupX, popupY, 100, 60});
 				score += 100;
@@ -953,13 +956,13 @@ public class GamePanel extends JPanel implements Runnable {
 
 	private void activateShovel() {
 		int baseCol = EAGLE_COL - 1;
-		int topRow  = EAGLE_ROW - 2;
+		int topRow = EAGLE_ROW - 2;
 		int sideRow = EAGLE_ROW - 1;
 		int[][] shovelTiles = {
-			{baseCol,     topRow},
+			{baseCol, topRow},
 			{baseCol + 1, topRow},
 			{baseCol + 2, topRow},
-			{baseCol,     sideRow},
+			{baseCol, sideRow},
 			{baseCol + 2, sideRow}
 		};
 		savedEagleArea = new int[shovelTiles.length][2];
@@ -968,10 +971,10 @@ public class GamePanel extends JPanel implements Runnable {
 			savedEagleArea[i][1] = shovelTiles[i][1];
 		}
 		for(int i = 0; i < shovelTiles.length; i++) {
-			int tileX   = shovelTiles[i][0];
-			int tileY   = shovelTiles[i][1];
-			int pixelX  = tileX * TILE_SIZE;
-			int pixelY  = tileY * TILE_SIZE;
+			int tileX = shovelTiles[i][0];
+			int tileY = shovelTiles[i][1];
+			int pixelX = tileX * TILE_SIZE;
+			int pixelY = tileY * TILE_SIZE;
 			for(int j = obstacles.size() - 1; j >= 0; j--) {
 				Obstacle obs = obstacles.get(j);
 				if(obs.x == pixelX && obs.y == pixelY) {
@@ -987,10 +990,10 @@ public class GamePanel extends JPanel implements Runnable {
 			return;
 		}
 		for(int i = 0; i < savedEagleArea.length; i++) {
-			int tileX   = savedEagleArea[i][0];
-			int tileY   = savedEagleArea[i][1];
-			int pixelX  = tileX * TILE_SIZE;
-			int pixelY  = tileY * TILE_SIZE;
+			int tileX = savedEagleArea[i][0];
+			int tileY = savedEagleArea[i][1];
+			int pixelX = tileX * TILE_SIZE;
+			int pixelY = tileY * TILE_SIZE;
 			for(int j = obstacles.size() - 1; j >= 0; j--) {
 				Obstacle obs = obstacles.get(j);
 				if(obs.x == pixelX && obs.y == pixelY && obs instanceof SteelWall) {
@@ -1006,7 +1009,7 @@ public class GamePanel extends JPanel implements Runnable {
 		if(stageClear) {
 			return;
 		}
-		stageClear      = true;
+		stageClear = true;
 		stageClearDelay = 150;
 	}
 
@@ -1141,7 +1144,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 		BufferedImage[] enemySprites = {imgEnemyUp, imgEnemyDown, imgEnemyLeft, imgEnemyRight};
 		for(int i = 0; i < enemies.size(); i++) {
-			EnemyTank enemy      = enemies.get(i);
+			EnemyTank enemy = enemies.get(i);
 			BufferedImage sprite = enemySprites[enemy.direction];
 			if(sprite != null) {
 				g.drawImage(sprite, enemy.x, enemy.y, enemy.width, enemy.height, null);
@@ -1157,7 +1160,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 		if(playerInvincibility == 0 || (playerInvincibility / 5) % 2 == 0) {
 			BufferedImage[] playerSprites = {imgPlayerUp, imgPlayerDown, imgPlayerLeft, imgPlayerRight};
-			BufferedImage currentSprite   = playerSprites[playerDir];
+			BufferedImage currentSprite = playerSprites[playerDir];
 			if(currentSprite != null) {
 				g.drawImage(currentSprite, playerTank.x, playerTank.y, playerTank.width, playerTank.height, null);
 			} else {
@@ -1203,17 +1206,17 @@ public class GamePanel extends JPanel implements Runnable {
 		g.setFont(new Font("Monospaced", Font.BOLD, 14));
 		for(int i = 0; i < scorePopups.size(); i++) {
 			int[] popup = scorePopups.get(i);
-			int popupX      = popup[0];
-			int popupY      = popup[1];
-			int popupValue  = popup[2];
-			int framesLeft  = popup[3];
+			int popupX = popup[0];
+			int popupY = popup[1];
+			int popupValue = popup[2];
+			int framesLeft = popup[3];
 			int driftY = (60 - framesLeft) / 3;
 			int alpha;
-		if(framesLeft < 20) {
-			alpha = framesLeft * 255 / 20;
-		} else {
-			alpha = 255;
-		}
+			if(framesLeft < 20) {
+				alpha = framesLeft * 255 / 20;
+			} else {
+				alpha = 255;
+			}
 			g.setColor(new Color(255, 220, 0, alpha));
 			g.drawString("+" + popupValue, popupX, popupY - driftY);
 		}
@@ -1288,11 +1291,11 @@ public class GamePanel extends JPanel implements Runnable {
 				PANEL_HEIGHT / 2 - 8);
 
 			String levelStr;
-		if(currentLevel > 0) {
-			levelStr = String.valueOf(currentLevel);
-		} else {
-			levelStr = "?";
-		}
+			if(currentLevel > 0) {
+				levelStr = String.valueOf(currentLevel);
+			} else {
+				levelStr = "?";
+			}
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Monospaced", Font.BOLD, 28));
 			FontMetrics levelMetrics = g.getFontMetrics();

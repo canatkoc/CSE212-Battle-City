@@ -59,7 +59,7 @@ public class LevelSelectDialog extends JDialog {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
 		JButton cancelBtn = new JButton("Cancel");
-		JButton okBtn     = new JButton("OK");
+		JButton okBtn = new JButton("OK");
 
 		cancelBtn.addActionListener(new ActionListener() {
 			@Override

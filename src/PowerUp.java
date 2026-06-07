@@ -7,11 +7,11 @@ import javax.imageio.ImageIO;
 public class PowerUp extends GameObject {
 
 	public static final int SHIELD = 0;
-	public static final int CLOCK  = 1;
+	public static final int CLOCK = 1;
 	public static final int SHOVEL = 2;
-	public static final int STAR   = 3;
-	public static final int BOMB   = 4;
-	public static final int TANK   = 5;
+	public static final int STAR = 3;
+	public static final int BOMB = 4;
+	public static final int TANK = 5;
 
 	public static final int SIZE = 40;
 
@@ -33,14 +33,14 @@ public class PowerUp extends GameObject {
 
 	public PowerUp(int tileX, int tileY, int powerUpType) {
 		// TODO Auto-generated constructor stub
-		this.type       = "PowerUp";
+		this.type = "PowerUp";
 		this.powerUpType = powerUpType;
-		this.x          = tileX * SIZE;
-		this.y          = tileY * SIZE;
-		this.width      = SIZE;
-		this.height     = SIZE;
-		this.tickCount  = 0;
-		this.visible    = true;
+		this.x = tileX * SIZE;
+		this.y = tileY * SIZE;
+		this.width = SIZE;
+		this.height = SIZE;
+		this.tickCount = 0;
+		this.visible = true;
 
 		if(images == null) {
 			loadImages();

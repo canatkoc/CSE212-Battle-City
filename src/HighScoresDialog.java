@@ -124,16 +124,16 @@ public class HighScoresDialog extends JDialog {
 	private void sortScores() {
 		Collections.sort(entries, new Comparator<String[]>() {
 			@Override
-			public int compare(String[] entryA, String[] entryB) {
+			public int compare(String[] a, String[] b) {
 				int scoreA = 0;
 				int scoreB = 0;
 				try {
-					scoreA = Integer.parseInt(entryA[1]);
+					scoreA = Integer.parseInt(a[1]);
 				} catch(NumberFormatException ex) {
 					scoreA = 0;
 				}
 				try {
-					scoreB = Integer.parseInt(entryB[1]);
+					scoreB = Integer.parseInt(b[1]);
 				} catch(NumberFormatException ex) {
 					scoreB = 0;
 				}

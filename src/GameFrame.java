@@ -11,16 +11,15 @@ public class GameFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private GamePanel  panel;
-	private HUDPanel   hud;
+	private GamePanel panel;
+	private HUDPanel hud;
 	private TitlePanel titlePanel;
-	private JPanel     rootPanel;
+	private JPanel rootPanel;
 
 	private int currentDifficulty = 1;
 
-
 	private static final String CARD_TITLE = "title";
-	private static final String CARD_GAME  = "game";
+	private static final String CARD_GAME = "game";
 
 	public GameFrame() {
 		setTitle("Battle City");
@@ -36,7 +35,7 @@ public class GameFrame extends JFrame {
 
 		JPanel gameCard = new JPanel(new BorderLayout());
 		gameCard.add(panel, BorderLayout.CENTER);
-		gameCard.add(hud,   BorderLayout.EAST);
+		gameCard.add(hud, BorderLayout.EAST);
 
 		titlePanel = new TitlePanel(new TitlePanel.TitleListener() {
 			@Override
@@ -57,20 +56,20 @@ public class GameFrame extends JFrame {
 
 		rootPanel = new JPanel(new CardLayout());
 		rootPanel.add(titlePanel, CARD_TITLE);
-		rootPanel.add(gameCard,   CARD_GAME);
+		rootPanel.add(gameCard, CARD_GAME);
 
 		add(rootPanel, BorderLayout.CENTER);
 
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("Menu");
 
-		JMenuItem newGameItem    = new JMenuItem("New Game");
-		JMenuItem mapEditorItem  = new JMenuItem("Map Editor");
-		JMenuItem optionsItem    = new JMenuItem("Options");
+		JMenuItem newGameItem = new JMenuItem("New Game");
+		JMenuItem mapEditorItem = new JMenuItem("Map Editor");
+		JMenuItem optionsItem = new JMenuItem("Options");
 		JMenuItem highScoresItem = new JMenuItem("High Scores");
-		JMenuItem helpItem       = new JMenuItem("Help");
-		JMenuItem aboutItem      = new JMenuItem("About");
-		JMenuItem exitItem       = new JMenuItem("Exit");
+		JMenuItem helpItem = new JMenuItem("Help");
+		JMenuItem aboutItem = new JMenuItem("About");
+		JMenuItem exitItem = new JMenuItem("Exit");
 
 		newGameItem.addActionListener(new ActionListener() {
 			@Override
@@ -121,7 +120,7 @@ public class GameFrame extends JFrame {
 		helpItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String helpText = "Controls:\n" + "  Move:   W / A / S / D  or  Arrow Keys\n" + "  Fire:   SPACE\n\n" + "Tiles:\n" + "  Brick  - destroyed by bullets\n" + "  Steel  - indestructible\n" + "  Bush   - tanks and bullets pass through\n" + "  Water  - bullets pass through, tanks cannot\n\n" + "Protect the Eagle!  Lose all lives or\n" + "let the Eagle be destroyed and it's Game Over.";
+				String helpText = "Controls:\n  Move: W / A / S / D  or  Arrow Keys\n  Fire: SPACE\n\nTiles:\n  Brick - destroyed by bullets\n  Steel - indestructible\n  Bush - tanks and bullets pass through\n  Water - bullets pass through, tanks cannot\n\nProtect the Eagle! Lose all lives or\nlet the Eagle be destroyed and it's Game Over.";
 				JOptionPane.showMessageDialog(GameFrame.this, helpText, "Help", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
@@ -129,7 +128,7 @@ public class GameFrame extends JFrame {
 		aboutItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String info = "Developer: Canat Koç\n" + "School Number: 20240702024\n" + "Email: canat.koc@std.yeditepe.edu.tr";
+				String info = "Developer: Canat Koç\nSchool Number: 20240702024\nEmail: canat.koc@std.yeditepe.edu.tr";
 				JOptionPane.showMessageDialog(GameFrame.this, info, "About", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
@@ -213,7 +212,6 @@ public class GameFrame extends JFrame {
 			}
 		}
 	}
-
 
 	private int[][] getLevel1Data() {
 		return new int[][] {

@@ -27,9 +27,9 @@ public class OptionsDialog extends JDialog {
 		titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 4, 10));
 		add(titleLabel, BorderLayout.NORTH);
 
-		radioEasy   = new JRadioButton("Easy   - fewer enemies on screen, slow fire rate");
+		radioEasy = new JRadioButton("Easy - fewer enemies on screen, slow fire rate");
 		radioMedium = new JRadioButton("Medium - standard settings");
-		radioHard   = new JRadioButton("Hard   - more enemies on screen, fast fire rate");
+		radioHard = new JRadioButton("Hard - more enemies on screen, fast fire rate");
 
 		ButtonGroup group = new ButtonGroup();
 		group.add(radioEasy);
@@ -52,7 +52,7 @@ public class OptionsDialog extends JDialog {
 
 		add(radioPanel, BorderLayout.CENTER);
 
-		JButton okButton     = new JButton("OK");
+		JButton okButton = new JButton("OK");
 		JButton cancelButton = new JButton("Cancel");
 
 		okButton.addActionListener(new ActionListener() {

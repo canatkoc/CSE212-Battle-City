@@ -5,11 +5,10 @@ public class PlayerTank extends Tank {
 	private static final int SHIELD_DURATION = 300;
 	private int shieldTimer;
 
-
 	public PlayerTank(int speed, int hp, int damage) {
 		super("Player Tank", 160, 520, 40, 40, speed, hp, damage);
 		// TODO Auto-generated constructor stub
-		this.starLevel   = 0;
+		this.starLevel = 0;
 		this.shieldTimer = 0;
 	}
 

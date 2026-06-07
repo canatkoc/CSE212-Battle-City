@@ -9,31 +9,31 @@ public class TitlePanel extends JPanel implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final int PANEL_W       = 800;
-	private static final int PANEL_H       = 600;
+	private static final int PANEL_W = 800;
+	private static final int PANEL_H = 600;
 
-	private static final int BG_W          = 640;
-	private static final int BG_H          = 560;
-	private static final int BG_OFFSET_X   = 0;
-	private static final int BG_OFFSET_Y   = (PANEL_H - BG_H) / 2;
+	private static final int BG_W = 640;
+	private static final int BG_H = 560;
+	private static final int BG_OFFSET_X = 0;
+	private static final int BG_OFFSET_Y = (PANEL_H - BG_H) / 2;
 
-	private static final int CURSOR_W      = 25;
-	private static final int CURSOR_H      = 33;
+	private static final int CURSOR_W = 25;
+	private static final int CURSOR_H = 33;
 
-	private static final int CURSOR_X      = BG_OFFSET_X + 162;
+	private static final int CURSOR_X = BG_OFFSET_X + 162;
 
 	private static final int[] CURSOR_ROW_Y = { 332, 372, 412 };
 
-	private static final int ITEM_1PLAYER      = 0;
-	private static final int ITEM_2PLAYERS     = 1;
+	private static final int ITEM_1PLAYER = 0;
+	private static final int ITEM_2PLAYERS = 1;
 	private static final int ITEM_CONSTRUCTION = 2;
-	private static final int ITEM_COUNT        = 3;
+	private static final int ITEM_COUNT = 3;
 
-	private static final int BLINK_MS          = 500;
+	private static final int BLINK_MS = 500;
 
-	private int     selectedItem  = ITEM_1PLAYER;
+	private int selectedItem = ITEM_1PLAYER;
 	private boolean cursorVisible = true;
-	private boolean isRunning     = false;
+	private boolean isRunning = false;
 
 	private BufferedImage titleBackground;
 	private BufferedImage cursorSprite;
